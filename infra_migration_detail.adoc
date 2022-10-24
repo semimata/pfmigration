@@ -1,0 +1,214 @@
+= 軽量プラットフォーム移行手順書兼報告書
+:lang: ja
+:doctype: book
+:author: クラウド開発課
+:revnumber: 1.0
+:version-label: バージョン
+:revdate: 2022年10月20日
+:toc: left
+:toclevels: 3
+:toc-title: 目次
+:sectnums:
+:sectnumlevels: 4
+:table-caption: 表
+:imagesdir: images
+:nofooter: yes
+
+
+== 作業内容
+
+軽量化プラットフォーム移行時にインフラでは以下の２項目の作業を実施する
+
+.作業内容
+[cols="1,2a,2",width=100%]
+|===
+|作業工程|内容|詳細
+|移行作業時|バックアップ取得|軽量プラットフォーム移行後に継続利用するデータのバックアップを取得する
+|移行作業後|不要リソース削除|軽量プラットフォーム移行後に不要となるクラウドリソースを削除する
+|===
+
+== 詳細作業
+
+=== バックアップ
+軽量化プラットフォーム移行後にも継続利用するデータのバックアップを取得する +
+取得するデータソースは、DynamoDBのテーブル +
+
+.作業記録
+[cols="1,1,1,1",width=100%]
+|===
+|作業開始時刻|作業終了時間|担当者|作業結果
+|YYYY/MM/DD-hh:mm|YYYY/MM/DD hh-mm|伊藤|完了
+|===
+
+==== バックアップ対象テーブル
+
+[cols="1,2,1,1,1",width=100%]
+|===
+|No|テーブル名|本番環境|STG環境|補足
+|{counter:tbl} |ccdlvy_adrs_info_tbl_prod|○|-|-
+|{counter:tbl} |ccdlvy_alarm_history_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_alarm_info_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_alarm_setting_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_box_info_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_crypto_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_device_connection_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_device_info_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_device_res_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_device_token_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_device_user_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_franchise_store_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_loan_group_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_loan_history_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_loan_info_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_log_history_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_logic_file_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_logic_info_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_notice_his_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_notice_info_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_notice_setting_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_operator_account_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_operator_history_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_order_info_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_receive_op_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_run_statistics_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_signage_info_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_store_info_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_store_user_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_temperature_history_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_temperature_info_tbl_prod|○|-|
+|{counter:tbl} |fdpf_ATZ_APP_prod|✕|-|
+|{counter:tbl} |fdpf_ATZ_AUTHORITY_prod|✕|-|
+|{counter:tbl} |fdpf_ATZ_LOCK_prod|✕|-|
+|{counter:tbl} |fdpf_ATZ_RESOURCE_OPERATION_TOKEN_prod|✕|-|
+|{counter:tbl} |fdpf_ATZ_ROLE_prod|✕|-|
+|{counter:tbl} |fdpf_ATZ_USER_prod|✕|-|
+|{counter:tbl} |fdpf_CVRID_device_mapping_prod|✕|-|
+|{counter:tbl} |fdpf_CVRID_model_mapping_prod|✕|-|
+
+
+|{counter:tbl} |stg_adrs_info_tbl|-|○|
+|{counter:tbl} |stg_alarm_history_tbl|-|○|
+|{counter:tbl} |stg_alarm_info_tbl|-|○|
+|{counter:tbl} |stg_alarm_setting_tbl|-|○|
+|{counter:tbl} |stg_box_info_tbl|-|○|
+|{counter:tbl} |stg_crypto_tbl|-|○|
+|{counter:tbl} |stg_device_connection_tbl|-|○|
+|{counter:tbl} |stg_device_info_tbl|-|○|
+|{counter:tbl} |stg_device_res_tbl|-|○|
+|{counter:tbl} |stg_device_run_statistic|-|○|
+|{counter:tbl} |stg_device_token_tbl|-|○|
+|{counter:tbl} |stg_device_user_tbl|-|○|
+|{counter:tbl} |stg_franchise_store_tbl|-|○|
+|{counter:tbl} |stg_kupon_csv_tbl|-|○|
+|{counter:tbl} |stg_loan_group_tbl|-|○|
+|{counter:tbl} |stg_loan_history_tbl|-|○|
+|{counter:tbl} |stg_loan_info_tbl|-|○|
+|{counter:tbl} |stg_log_history_tbl|-|○|
+|{counter:tbl} |stg_logic_file_tbl|-|○|
+|{counter:tbl} |stg_logic_info_tbl|-|○|
+|{counter:tbl} |stg_notice_his_tbl|-|○|
+|{counter:tbl} |stg_notice_info_tbl|-|○|
+|{counter:tbl} |stg_notice_setting_tbl|-|○|
+|{counter:tbl} |stg_operator_account_tbl|-|○|
+|{counter:tbl} |stg_operator_history_tbl|-|✕|
+|{counter:tbl} |stg_order_info_tbl|-|✕|
+|{counter:tbl} |stg_receive_op_tbl|-|✕|
+|{counter:tbl} |stg_run_statistics_tbl|-|✕|
+|{counter:tbl} |stg_signage_info_tbl-|-|✕|
+|{counter:tbl} |stg_store_info_tbl|-|✕|
+|{counter:tbl} |stg_store_user_tbl|-|✕|
+|{counter:tbl} |stg_temperature_history_tbl|-|✕|
+|{counter:tbl} |stg_temperature_info_tbl|-|✕|
+|{counter:tbl} |stg_version_admin_tbl|-|✕|
+|{counter:tbl} |ffdpf_ATZ_APP_stg|-|✕|
+|{counter:tbl} |ffdpf_ATZ_AUTHORITY_stg|-|✕|
+|{counter:tbl} |ffdpf_ATZ_LOCK_stg|-|✕|
+|{counter:tbl} |ffdpf_ATZ_RESOURCE_OPERATION_TOKEN_stg|-|✕|
+|{counter:tbl} |ffdpf_ATZ_ROLE_stg|-|✕|
+|{counter:tbl} |ffdpf_ATZ_USER_stg|-|✕|
+|{counter:tbl} |ffdpf_CVRID_DMP_stg|-|✕|
+|{counter:tbl} |ffdpf_CVRID_MMP_stg|-|✕|
+|{counter:tbl} |fdpf_EXT_credentials_stg|-|✕|
+|===
+
+==== バックアップ作業
+
+.本番環境のバックアップコマンド
+[cols="1,13,1",width=100%]
+|===
+|No|コマンド|結果
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_adrs_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_adrs_info_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_adrs_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_adrs_info_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_alarm_history_tbl_prod" --backup-name  2022_10_30_ccdlvy_alarm_history_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_alarm_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_alarm_info_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_alarm_setting_tbl_prod" --backup-name 2022_10_30_ccdlvy_alarm_setting_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_box_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_box_info_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_crypto_tbl_prod" --backup-name 2022_10_30_ccdlvy_crypto_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_device_connection_tbl_prod" --backup-name 2022_10_30_ccdlvy_device_connection_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_device_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_device_info_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_device_res_tbl_prod" --backup-name 2022_10_30_ccdlvy_device_res_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_device_token_tbl_prod" --backup-name 2022_10_30_ccdlvy_device_token_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_device_user_tbl_prod" --backup-name 2022_10_30_ccdlvy_device_user_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_franchise_store_tbl_prod" --backup-name 2022_10_30_ccdlvy_franchise_store_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_loan_group_tbl_prod" --backup-name 2022_10_30_ccdlvy_loan_group_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_loan_history_tbl_prod" --backup-name 2022_10_30_ccdlvy_loan_history_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_loan_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_loan_info_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_log_history_tbl_prod" --backup-name 2022_10_30_ccdlvy_log_history_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_logic_file_tbl_prod" --backup-name 2022_10_30_ccdlvy_logic_file_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_logic_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_logic_info_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_notice_his_tbl_prod" --backup-name 2022_10_30_ccdlvy_notice_his_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_notice_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_notice_info_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_notice_setting_tbl_prod" --backup-name 2022_10_30_ccdlvy_notice_setting_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_operator_account_tbl_prod" --backup-name 2022_10_30_ccdlvy_operator_account_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_operator_history_tbl_prod" --backup-name 2022_10_30_ccdlvy_operator_history_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_order_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_order_info_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_receive_op_tbl_prod" --backup-name 2022_10_30_ccdlvy_receive_op_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_run_statistics_tbl_prod" --backup-name 2022_10_30_ccdlvy_run_statistics_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_signage_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_signage_info_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_store_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_store_info_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_store_user_tbl_prod" --backup-name 2022_10_30_ccdlvy_store_user_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_temperature_history_tbl_prod" --backup-name 2022_10_30_ccdlvy_temperature_history_tbl_prod|
+|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_temperature_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_temperature_info_tbl_prod|
+|===
+
+.STG環境のバックアップコマンド
+[cols="1,13,1",width=100%]
+|===
+|{counter:stgcmd} |astg_adrs_info_tbl|
+|{counter:stgcmd} |stg_alarm_history_tbl|
+|{counter:stgcmd} |stg_alarm_info_tbl|
+|{counter:stgcmd} |stg_alarm_setting_tbl|
+|{counter:stgcmd} |stg_box_info_tbl|
+|{counter:stgcmd} |stg_crypto_tbl|
+|{counter:stgcmd} |stg_device_connection_tbl|
+|{counter:stgcmd} |stg_device_info_tbl|
+|{counter:stgcmd} |stg_device_res_tbl|
+|{counter:stgcmd} |stg_device_run_statistic|
+|{counter:stgcmd} |stg_device_token_tbl|
+|{counter:stgcmd} |stg_device_user_tbl|
+|{counter:stgcmd} |stg_franchise_store_tbl|
+|{counter:stgcmd} |stg_kupon_csv_tbl|
+|{counter:stgcmd} |stg_loan_group_tbl|
+|{counter:stgcmd} |stg_loan_history_tbl|
+|{counter:stgcmd} |stg_loan_info_tbl|
+|{counter:stgcmd} |stg_log_history_tbl|
+|{counter:stgcmd} |stg_logic_file_tbl|
+|{counter:stgcmd} |stg_logic_info_tbl|
+|{counter:stgcmd} |stg_notice_his_tbl|
+|{counter:stgcmd} |stg_notice_info_tbl|
+|{counter:stgcmd} |stg_notice_setting_tbl|
+|{counter:stgcmd} |stg_operator_account_tbl|
+|{counter:stgcmd} |stg_operator_history_tbl|
+|{counter:stgcmd} |stg_order_info_tbl|
+|{counter:stgcmd} |stg_receive_op_tbl|
+|{counter:stgcmd} |stg_run_statistics_tbl|
+|{counter:stgcmd} |stg_signage_info_tbl|
+|{counter:stgcmd} |stg_store_info_tbl|
+|{counter:stgcmd} |stg_store_user_tbl|
+|{counter:stgcmd} |stg_temperature_history_tbl|
+|{counter:stgcmd} |stg_temperature_info_tbl|
+|{counter:stgcmd} |stg_version_admin_tbl|
+
+|===
+
+
