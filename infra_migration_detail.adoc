@@ -134,81 +134,109 @@
 ==== バックアップ作業
 
 .本番環境のバックアップコマンド
-[cols="1,13,1",width=100%]
+[cols="1,2,10,1",width=100%]
 |===
-|No|コマンド|結果
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_adrs_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_adrs_info_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_adrs_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_adrs_info_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_alarm_history_tbl_prod" --backup-name  2022_10_30_ccdlvy_alarm_history_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_alarm_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_alarm_info_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_alarm_setting_tbl_prod" --backup-name 2022_10_30_ccdlvy_alarm_setting_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_box_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_box_info_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_crypto_tbl_prod" --backup-name 2022_10_30_ccdlvy_crypto_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_device_connection_tbl_prod" --backup-name 2022_10_30_ccdlvy_device_connection_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_device_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_device_info_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_device_res_tbl_prod" --backup-name 2022_10_30_ccdlvy_device_res_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_device_token_tbl_prod" --backup-name 2022_10_30_ccdlvy_device_token_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_device_user_tbl_prod" --backup-name 2022_10_30_ccdlvy_device_user_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_franchise_store_tbl_prod" --backup-name 2022_10_30_ccdlvy_franchise_store_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_loan_group_tbl_prod" --backup-name 2022_10_30_ccdlvy_loan_group_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_loan_history_tbl_prod" --backup-name 2022_10_30_ccdlvy_loan_history_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_loan_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_loan_info_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_log_history_tbl_prod" --backup-name 2022_10_30_ccdlvy_log_history_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_logic_file_tbl_prod" --backup-name 2022_10_30_ccdlvy_logic_file_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_logic_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_logic_info_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_notice_his_tbl_prod" --backup-name 2022_10_30_ccdlvy_notice_his_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_notice_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_notice_info_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_notice_setting_tbl_prod" --backup-name 2022_10_30_ccdlvy_notice_setting_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_operator_account_tbl_prod" --backup-name 2022_10_30_ccdlvy_operator_account_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_operator_history_tbl_prod" --backup-name 2022_10_30_ccdlvy_operator_history_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_order_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_order_info_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_receive_op_tbl_prod" --backup-name 2022_10_30_ccdlvy_receive_op_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_run_statistics_tbl_prod" --backup-name 2022_10_30_ccdlvy_run_statistics_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_signage_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_signage_info_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_store_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_store_info_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_store_user_tbl_prod" --backup-name 2022_10_30_ccdlvy_store_user_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_temperature_history_tbl_prod" --backup-name 2022_10_30_ccdlvy_temperature_history_tbl_prod|
-|{counter:cmd} |aws dynamodb create-backup --table-name “ccdlvy_temperature_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_temperature_info_tbl_prod|
+|No|テーブル名|コマンド|結果
+|{counter:cmd} |ccdlvy_adrs_info_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_adrs_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_adrs_info_tbl_prod|
+|{counter:cmd} |ccdlvy_adrs_info_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_adrs_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_adrs_info_tbl_prod|
+|{counter:cmd} |ccdlvy_alarm_history_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_alarm_history_tbl_prod" --backup-name  2022_10_30_ccdlvy_alarm_history_tbl_prod|
+|{counter:cmd} |ccdlvy_alarm_info_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_alarm_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_alarm_info_tbl_prod|
+|{counter:cmd} |ccdlvy_alarm_setting_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_alarm_setting_tbl_prod" --backup-name 2022_10_30_ccdlvy_alarm_setting_tbl_prod|
+|{counter:cmd} |ccdlvy_box_info_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_box_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_box_info_tbl_prod|
+|{counter:cmd} |ccdlvy_box_info_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_crypto_tbl_prod" --backup-name 2022_10_30_ccdlvy_crypto_tbl_prod|
+|{counter:cmd} |ccdlvy_device_connection_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_device_connection_tbl_prod" --backup-name 2022_10_30_ccdlvy_device_connection_tbl_prod|
+|{counter:cmd} |ccdlvy_device_info_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_device_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_device_info_tbl_prod|
+|{counter:cmd} |ccdlvy_device_res_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_device_res_tbl_prod" --backup-name 2022_10_30_ccdlvy_device_res_tbl_prod|
+|{counter:cmd} |ccdlvy_device_token_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_device_token_tbl_prod" --backup-name 2022_10_30_ccdlvy_device_token_tbl_prod|
+|{counter:cmd} |ccdlvy_device_user_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_device_user_tbl_prod" --backup-name 2022_10_30_ccdlvy_device_user_tbl_prod|
+|{counter:cmd} |ccdlvy_franchise_store_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_franchise_store_tbl_prod" --backup-name 2022_10_30_ccdlvy_franchise_store_tbl_prod|
+|{counter:cmd} |ccdlvy_loan_group_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_loan_group_tbl_prod" --backup-name 2022_10_30_ccdlvy_loan_group_tbl_prod|
+|{counter:cmd} |ccdlvy_loan_history_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_loan_history_tbl_prod" --backup-name 2022_10_30_ccdlvy_loan_history_tbl_prod|
+|{counter:cmd} |ccdlvy_loan_info_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_loan_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_loan_info_tbl_prod|
+|{counter:cmd} |ccdlvy_log_history_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_log_history_tbl_prod" --backup-name 2022_10_30_ccdlvy_log_history_tbl_prod|
+|{counter:cmd} |ccdlvy_logic_file_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_logic_file_tbl_prod" --backup-name 2022_10_30_ccdlvy_logic_file_tbl_prod|
+|{counter:cmd} |ccdlvy_logic_info_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_logic_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_logic_info_tbl_prod|
+|{counter:cmd} |ccdlvy_notice_his_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_notice_his_tbl_prod" --backup-name 2022_10_30_ccdlvy_notice_his_tbl_prod|
+|{counter:cmd} |ccdlvy_notice_info_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_notice_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_notice_info_tbl_prod|
+|{counter:cmd} |ccdlvy_notice_setting_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_notice_setting_tbl_prod" --backup-name 2022_10_30_ccdlvy_notice_setting_tbl_prod|
+|{counter:cmd} |ccdlvy_operator_account_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_operator_account_tbl_prod" --backup-name 2022_10_30_ccdlvy_operator_account_tbl_prod|
+|{counter:cmd} |ccdlvy_operator_history_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_operator_history_tbl_prod" --backup-name 2022_10_30_ccdlvy_operator_history_tbl_prod|
+|{counter:cmd} |ccdlvy_order_info_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_order_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_order_info_tbl_prod|
+|{counter:cmd} |ccdlvy_receive_op_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_receive_op_tbl_prod" --backup-name 2022_10_30_ccdlvy_receive_op_tbl_prod|
+|{counter:cmd} |ccdlvy_run_statistics_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_run_statistics_tbl_prod" --backup-name 2022_10_30_ccdlvy_run_statistics_tbl_prod|
+|{counter:cmd} |ccdlvy_signage_info_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_signage_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_signage_info_tbl_prod|
+|{counter:cmd} |ccdlvy_store_info_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_store_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_store_info_tbl_prod|
+|{counter:cmd} |ccdlvy_store_user_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_store_user_tbl_prod" --backup-name 2022_10_30_ccdlvy_store_user_tbl_prod|
+|{counter:cmd} |ccdlvy_temperature_history_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_temperature_history_tbl_prod" --backup-name 2022_10_30_ccdlvy_temperature_history_tbl_prod|
+|{counter:cmd} |ccdlvy_temperature_info_tbl_prod|aws dynamodb create-backup --table-name “ccdlvy_temperature_info_tbl_prod" --backup-name 2022_10_30_ccdlvy_temperature_info_tbl_prod|
 |===
 
 .STG環境のバックアップコマンド
-[cols="1,13,1",width=100%]
+[cols="1,2,10,1",width=100%]
 |===
-|{counter:stgcmd} |astg_adrs_info_tbl|
-|{counter:stgcmd} |stg_alarm_history_tbl|
-|{counter:stgcmd} |stg_alarm_info_tbl|
-|{counter:stgcmd} |stg_alarm_setting_tbl|
-|{counter:stgcmd} |stg_box_info_tbl|
-|{counter:stgcmd} |stg_crypto_tbl|
-|{counter:stgcmd} |stg_device_connection_tbl|
-|{counter:stgcmd} |stg_device_info_tbl|
-|{counter:stgcmd} |stg_device_res_tbl|
-|{counter:stgcmd} |stg_device_run_statistic|
-|{counter:stgcmd} |stg_device_token_tbl|
-|{counter:stgcmd} |stg_device_user_tbl|
-|{counter:stgcmd} |stg_franchise_store_tbl|
-|{counter:stgcmd} |stg_kupon_csv_tbl|
-|{counter:stgcmd} |stg_loan_group_tbl|
-|{counter:stgcmd} |stg_loan_history_tbl|
-|{counter:stgcmd} |stg_loan_info_tbl|
-|{counter:stgcmd} |stg_log_history_tbl|
-|{counter:stgcmd} |stg_logic_file_tbl|
-|{counter:stgcmd} |stg_logic_info_tbl|
-|{counter:stgcmd} |stg_notice_his_tbl|
-|{counter:stgcmd} |stg_notice_info_tbl|
-|{counter:stgcmd} |stg_notice_setting_tbl|
-|{counter:stgcmd} |stg_operator_account_tbl|
-|{counter:stgcmd} |stg_operator_history_tbl|
-|{counter:stgcmd} |stg_order_info_tbl|
-|{counter:stgcmd} |stg_receive_op_tbl|
-|{counter:stgcmd} |stg_run_statistics_tbl|
-|{counter:stgcmd} |stg_signage_info_tbl|
-|{counter:stgcmd} |stg_store_info_tbl|
-|{counter:stgcmd} |stg_store_user_tbl|
-|{counter:stgcmd} |stg_temperature_history_tbl|
-|{counter:stgcmd} |stg_temperature_info_tbl|
-|{counter:stgcmd} |stg_version_admin_tbl|
+|No|テーブル名|コマンド|結果
+|{counter:stgcmd} |fdpf_ATZ_APP_stg |aws dynamodb create-backup --table-name “fdpf_ATZ_APP_stg" --backup-name 2022_10_30_fdpf_ATZ_APP_stg|
+|{counter:stgcmd} |fdpf_ATZ_AUTHORITY_stg| aws dynamodb create-backup --table-name “fdpf_ATZ_AUTHORITY_stg" --backup-name 2022_10_30_fdpf_ATZ_AUTHORITY_stg|
+|{counter:stgcmd} |fdpf_ATZ_LOCK_stg|aws dynamodb create-backup --table-name “fdpf_ATZ_LOCK_stg" --backup-name 2022_10_30_fdpf_ATZ_LOCK_stg|
+|{counter:stgcmd} |fdpf_ATZ_RESOURCE_OPERATION_TOKEN_stg|aws dynamodb create-backup --table-name “fdpf_ATZ_RESOURCE_OPERATION_TOKEN_stg" --backup-name 2022_10_30_fdpf_ATZ_RESOURCE_OPERATION_TOKEN_stg|
+|{counter:stgcmd} |fdpf_ATZ_ROLE_stg|aws dynamodb create-backup --table-name “fdpf_ATZ_ROLE_stg" --backup-name 2022_10_30_fdpf_ATZ_ROLE_stg|
+|{counter:stgcmd} |fdpf_ATZ_USER_stg|aws dynamodb create-backup --table-name “fdpf_ATZ_USER_stg" --backup-name 2022_10_30_fdpf_ATZ_USER_stg|
+|{counter:stgcmd} |fdpf_CVRID_DMP_stg|aws dynamodb create-backup --table-name “fdpf_CVRID_DMP_stg" --backup-name 2022_10_30_fdpf_CVRID_DMP_stg|
+|{counter:stgcmd} |fdpf_CVRID_MMP_stg|aws dynamodb create-backup --table-name “fdpf_CVRID_MMP_stg" --backup-name 2022_10_30_fdpf_CVRID_MMP_stg|
+|{counter:stgcmd} |fdpf_EXT_credentials_stg|aws dynamodb create-backup --table-name “fdpf_EXT_credentials_stg" --backup-name 2022_10_30_fdpf_EXT_credentials_stg|
+|{counter:stgcmd} |stg_adrs_info_tbl|aws dynamodb create-backup --table-name “stg_adrs_info_tbl" --backup-name 2022_10_30_stg_adrs_info_tbl|
+|{counter:stgcmd} |stg_alarm_history_tbl|aws dynamodb create-backup --table-name “stg_alarm_history_tbl" --backup-name 2022_10_30_stg_alarm_history_tbl|
+|{counter:stgcmd} |stg_alarm_info_tbl|aws dynamodb create-backup --table-name “stg_alarm_info_tbl" --backup-name 2022_10_30_stg_alarm_info_tbl|
+|{counter:stgcmd} |stg_alarm_setting_tbl|aws dynamodb create-backup --table-name “stg_alarm_setting_tbl" --backup-name 2022_10_30_stg_alarm_setting_tbl|
+|{counter:stgcmd} |stg_box_info_tbl|aws dynamodb create-backup --table-name “stg_box_info_tbl" --backup-name 2022_10_30_stg_box_info_tbl|
+|{counter:stgcmd} |stg_crypto_tbl|aws dynamodb create-backup --table-name “stg_crypto_tbl" --backup-name 2022_10_30_stg_crypto_tbl|
+|{counter:stgcmd} |stg_device_connection_tbl|aws dynamodb create-backup --table-name “stg_device_connection_tbl" --backup-name 2022_10_30_stg_device_connection_tbl|
+|{counter:stgcmd} |stg_device_info_tbl|aws dynamodb create-backup --table-name “stg_device_info_tbl" --backup-name 2022_10_30_stg_device_info_tbl|
+|{counter:stgcmd} |stg_device_res_tbl|aws dynamodb create-backup --table-name “stg_device_res_tbl" --backup-name 2022_10_30_stg_device_res_tbl|
+|{counter:stgcmd} |stg_device_run_statistic|aws dynamodb create-backup --table-name “stg_device_run_statistic" --backup-name 2022_10_30_stg_device_run_statistic|
+|{counter:stgcmd} |stg_device_token_tbl|aws dynamodb create-backup --table-name “stg_device_token_tbl" --backup-name 2022_10_30_stg_device_token_tbl|
+|{counter:stgcmd} |stg_device_user_tbl|aws dynamodb create-backup --table-name “stg_device_user_tbl" --backup-name 2022_10_30_stg_device_user_tbl|
+|{counter:stgcmd} |stg_franchise_store_tbl|aws dynamodb create-backup --table-name “stg_franchise_store_tbl" --backup-name 2022_10_30_stg_franchise_store_tbl|
+|{counter:stgcmd} |stg_kupon_csv_tbl|aws dynamodb create-backup --table-name “stg_kupon_csv_tbl" --backup-name 2022_10_30_stg_kupon_csv_tbl|
+|{counter:stgcmd} |stg_loan_group_tbl|aws dynamodb create-backup --table-name “stg_loan_group_tbl" --backup-name 2022_10_30_stg_loan_group_tbl|
+|{counter:stgcmd} |stg_loan_history_tbl|aws dynamodb create-backup --table-name “stg_loan_history_tbl" --backup-name 2022_10_30_stg_loan_history_tbl|
+|{counter:stgcmd} |stg_loan_info_tbl|aws dynamodb create-backup --table-name “stg_loan_info_tbl" --backup-name 2022_10_30_stg_loan_info_tbl|
+|{counter:stgcmd} |stg_log_history_tbl|aws dynamodb create-backup --table-name “stg_log_history_tbl" --backup-name 2022_10_30_stg_log_history_tbl|
+|{counter:stgcmd} |stg_logic_file_tbl|aws dynamodb create-backup --table-name “stg_logic_file_tbl" --backup-name 2022_10_30_stg_logic_file_tbl|
+|{counter:stgcmd} |stg_logic_info_tbl|aws dynamodb create-backup --table-name “stg_logic_info_tbl" --backup-name 2022_10_30_stg_logic_info_tbl|
+|{counter:stgcmd} |stg_notice_his_tbl|aws dynamodb create-backup --table-name “stg_notice_his_tbl" --backup-name 2022_10_30_stg_notice_his_tbl|
+|{counter:stgcmd} |stg_notice_info_tbl|aws dynamodb create-backup --table-name “stg_notice_info_tbl" --backup-name 2022_10_30_stg_notice_info_tbl|
+|{counter:stgcmd} |stg_notice_setting_tbl|aws dynamodb create-backup --table-name “stg_notice_setting_tbl" --backup-name 2022_10_30_stg_notice_setting_tbl|
+|{counter:stgcmd} |stg_operator_account_tbl|aws dynamodb create-backup --table-name “stg_operator_account_tbl" --backup-name 2022_10_30_stg_operator_account_tbl|
+|{counter:stgcmd} |stg_operator_history_tbl|aws dynamodb create-backup --table-name “stg_operator_history_tbl" --backup-name 2022_10_30_stg_operator_history_tbl|
+|{counter:stgcmd} |stg_order_info_tbl|aws dynamodb create-backup --table-name “stg_order_info_tbl" --backup-name 2022_10_30_stg_order_info_tbl|
+|{counter:stgcmd} |stg_receive_op_tbl|aws dynamodb create-backup --table-name “stg_receive_op_tbl" --backup-name 2022_10_30_stg_receive_op_tbl|
+|{counter:stgcmd} |stg_run_statistics_tbl|aws dynamodb create-backup --table-name “stg_run_statistics_tbl" --backup-name 2022_10_30_stg_run_statistics_tbl|
+|{counter:stgcmd} |stg_signage_info_tbl|aws dynamodb create-backup --table-name “stg_signage_info_tbl" --backup-name 2022_10_30_stg_signage_info_tbl|
+|{counter:stgcmd} |stg_store_info_tbl|aws dynamodb create-backup --table-name “stg_store_info_tbl" --backup-name 2022_10_30_stg_store_info_tbl|
+|{counter:stgcmd} |stg_store_user_tbl|aws dynamodb create-backup --table-name “stg_store_user_tbl" --backup-name 2022_10_30_stg_store_user_tbl|
+|{counter:stgcmd} |stg_temperature_history_tbl|aws dynamodb create-backup --table-name “stg_temperature_history_tbl" --backup-name 2022_10_30_stg_temperature_history_tbl|
+|{counter:stgcmd} |stg_temperature_info_tbl|aws dynamodb create-backup --table-name “stg_temperature_info_tbl" --backup-name 2022_10_30_stg_temperature_info_tbl|
+|{counter:stgcmd} |stg_version_admin_tbl|aws dynamodb create-backup --table-name “stg_version_admin_tbl" --backup-name 2022_10_30_stg_version_admin_tbl|
 
 |===
 
+==== テスト
 
+[cols="1,1,4,2,5a,1",width=100%]
+.テストケース
+|===
+|No|分類|テスト内容|確認方法|条件|結果
+|{counter:case} |正常|XXXができること
+|画面から確認
+|
+* AWSリソース
+** API Gatewayが切り替わっている
+** 古いAPI Gatewayが削除（無効になっている）
+
+* テストデータ
+
+** 設備名：XXX
+|OK
+
+|===
