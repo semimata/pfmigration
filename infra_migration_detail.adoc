@@ -110,24 +110,24 @@
 |{counter:tbl} |stg_notice_info_tbl|-|○|
 |{counter:tbl} |stg_notice_setting_tbl|-|○|
 |{counter:tbl} |stg_operator_account_tbl|-|○|
-|{counter:tbl} |stg_operator_history_tbl|-|✕|
-|{counter:tbl} |stg_order_info_tbl|-|✕|
-|{counter:tbl} |stg_receive_op_tbl|-|✕|
-|{counter:tbl} |stg_run_statistics_tbl|-|✕|
-|{counter:tbl} |stg_signage_info_tbl-|-|✕|
-|{counter:tbl} |stg_store_info_tbl|-|✕|
-|{counter:tbl} |stg_store_user_tbl|-|✕|
-|{counter:tbl} |stg_temperature_history_tbl|-|✕|
-|{counter:tbl} |stg_temperature_info_tbl|-|✕|
-|{counter:tbl} |stg_version_admin_tbl|-|✕|
-|{counter:tbl} |ffdpf_ATZ_APP_stg|-|✕|
-|{counter:tbl} |ffdpf_ATZ_AUTHORITY_stg|-|✕|
-|{counter:tbl} |ffdpf_ATZ_LOCK_stg|-|✕|
-|{counter:tbl} |ffdpf_ATZ_RESOURCE_OPERATION_TOKEN_stg|-|✕|
-|{counter:tbl} |ffdpf_ATZ_ROLE_stg|-|✕|
-|{counter:tbl} |ffdpf_ATZ_USER_stg|-|✕|
-|{counter:tbl} |ffdpf_CVRID_DMP_stg|-|✕|
-|{counter:tbl} |ffdpf_CVRID_MMP_stg|-|✕|
+|{counter:tbl} |stg_operator_history_tbl|-|○|
+|{counter:tbl} |stg_order_info_tbl|-|○|
+|{counter:tbl} |stg_receive_op_tbl|-|○|
+|{counter:tbl} |stg_run_statistics_tbl|-|○|
+|{counter:tbl} |stg_signage_info_tbl-|-|○|
+|{counter:tbl} |stg_store_info_tbl|-|○|
+|{counter:tbl} |stg_store_user_tbl|-|○|
+|{counter:tbl} |stg_temperature_history_tbl|-|○|
+|{counter:tbl} |stg_temperature_info_tbl|-|○|
+|{counter:tbl} |stg_version_admin_tbl|-|○|
+|{counter:tbl} |fdpf_ATZ_APP_stg|-|✕|
+|{counter:tbl} |fdpf_ATZ_AUTHORITY_stg|-|✕|
+|{counter:tbl} |fdpf_ATZ_LOCK_stg|-|✕|
+|{counter:tbl} |fdpf_ATZ_RESOURCE_OPERATION_TOKEN_stg|-|✕|
+|{counter:tbl} |fdpf_ATZ_ROLE_stg|-|✕|
+|{counter:tbl} |fdpf_ATZ_USER_stg|-|✕|
+|{counter:tbl} |fdpf_CVRID_DMP_stg|-|✕|
+|{counter:tbl} |fdpf_CVRID_MMP_stg|-|✕|
 |{counter:tbl} |fdpf_EXT_credentials_stg|-|✕|
 |===
 
@@ -221,22 +221,55 @@
 
 |===
 
+==== AWSリソースの変更作業
+
+* プラットフォーム移行後にコンテナサービスを利用しないための変更を実施する
+* リソース削除はプラットフォーム移行後から一定期間（一週間程度）経過した後に実施する
+
+.変更するリソース
+[cols="1,2,4a",width=100%]
+|===
+|リソース|リソース名|変更内容
+|API Gateway|fdpf-cmnsvc-(環境名)|
+各リソースと関連付けされているLambdaとの関連づけを変更する
+
+具体的には以下の作業を実施
+
+* 結合タイプを「Lambda関数」から「Mock」へ変更する
+
+|RDS|fdpf-cmnsvc-(環境名)|セキュリティグループのインバウンドルールを削除する
+|===
+
 ==== テスト
 
-[cols="1,1,4,2,5a,1",width=100%]
+[cols="1,3,1,6a,1",width=100%]
 .テストケース
 |===
-|No|分類|テスト内容|確認方法|条件|結果
-|{counter:case} |正常|XXXができること
-|画面から確認
+|No|テスト内容|確認方法|条件|結果
+|{counter:case} |コンテナ向けのAPI Gatewayを削除しても要冷機器アプリが稼働する
+|画面
 |
-* AWSリソース
-** API Gatewayが切り替わっている
-** 古いAPI Gatewayが削除（無効になっている）
+* API GatewayとLambdaの結合を削除（変更する）
 
-* テストデータ
-
-** 設備名：XXX
+[cols="1,1"]
+!===
+!メソッド名
+!Lambda
+!cognitocheck
+!fdpf_ATZ_cognitocheck_(環境名)
+!confirmAuthorization
+!fdpf_ATZ_confirmAuthorization_(環境名)
+!destroyResourceOperationToken
+!fdpf_ATZ_destroyResourceOperationToken_(環境名)
+!getAccessibleScopeData 
+!fdpf_ATZ_getAccessibleScopeData_(環境名)
+!getResourceOperationToken
+!fdpf_ATZ_getResourceOperationToken_(環境名)
+!updateAuthRegistration
+!fdpf_ATZ_updateAuthRegistration_(環境名)
+!updateUserRegistration
+!fdpf_ATZ_updateUserRegistration_(環境名)
+!===
 |OK
 
 |===
