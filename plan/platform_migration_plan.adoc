@@ -67,6 +67,7 @@ image::migration_overall.jpg[]
 * *要冷機器監視システムのLambda入れ替え*
 * *Lambdaのランタイムのバージョンアップ（NodeJs 12→16）*
 * *Secret Mangerリソースの追加*
+* *Lambdaの実行ロールの追加*
 ** 環境変数の削除
 
 image::lambda-migration.png[]
