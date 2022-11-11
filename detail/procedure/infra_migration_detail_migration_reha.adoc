@@ -1,0 +1,172 @@
+= 軽量プラットフォーム移行手順書兼報告書
+:lang: ja
+:doctype: book
+:author: クラウド開発課
+:revnumber: 1.0
+:version-label: バージョン
+:revdate: 2022年11月4日
+:toc: left
+:toclevels: 3
+:toc-title: 目次
+:sectnums:
+:sectnumlevels: 4
+:table-caption: 表
+:imagesdir: images
+:sourcedir: ../cmd
+:nofooter: yes
+
+
+== 作業内容
+
+軽量化プラットフォーム移行時にインフラでは以下の２項目の作業を実施する
+
+.作業記録
+[cols="1,2,2,1,1",width=100%]
+|===
+|作業工程|作業開始時刻|作業終了時間|担当者|作業結果
+|移行時|2022年11月2日 10時50分|2022年11月2日 11時2分|伊藤|完了
+|移行後|2022年11月○日 〇〇時〇〇分|2022年11月○日 〇〇時〇〇分|伊藤|完了
+|===
+
+.作業内容
+[cols="1,2a,3",width=100%]
+|===
+|作業工程|内容|詳細
+|移行作業時|バックアップ取得|軽量プラットフォーム移行後に継続利用するデータのバックアップを取得する
+|移行作業後|不要リソース削除|軽量プラットフォーム移行後に不要となるクラウドリソースを削除する
+|===
+
+== 詳細作業
+
+=== バックアップ
+
+* 軽量化プラットフォーム移行後にも継続利用するデータのバックアップを取得する +
+* 取得するデータソースは以下のリソース
+** RDS
+** Dynamodb Table
+
+==== バックアップ作業
+
+* RDSバックアップを取得する
+
+aws rds create-db-snapshot --db-instance-identifier fdpf-cmnsvc-reha --db-snapshot-identifier fdpf-cmnsvc-reha-1102 --profile migration
+
+
+* Dynamodb Tableを取得する
+
+.migration環境のバックアップコマンド
+[cols="1,2,10,1",width=100%]
+|===
+|No|テーブル名|コマンド|結果
+|{counter:cmd} |fdpf_ATZ_APP_prod |aws dynamodb create-backup --table-name fdpf_ATZ_APP_prod --backup-name 2022_11_02_fdpf_ATZ_APP_migration --profile migration|○
+|{counter:cmd} |fdpf_ATZ_AUTHORITY_prod| aws dynamodb create-backup --table-name fdpf_ATZ_AUTHORITY_prod --backup-name 2022_11_02_fdpf_ATZ_AUTHORITY_migration --profile migration|○
+|{counter:cmd} |fdpf_ATZ_LOCK_prod|aws dynamodb create-backup --table-name fdpf_ATZ_LOCK_prod --backup-name 2022_10_30_fdpf_ATZ_LOCK_migration --profile migration|○
+|{counter:cmd} |fdpf_ATZ_RESOURCE_OPERATION_TOKEN_prod|aws dynamodb create-backup --table-name fdpf_ATZ_RESOURCE_OPERATION_TOKEN_prod --backup-name 2022_11_02_fdpf_ATZ_RESOURCE_OPERATION_TOKEN_migration --profile migration|○
+|{counter:cmd} |fdpf_ATZ_ROLE_prod|aws dynamodb create-backup --table-name fdpf_ATZ_ROLE_prod --backup-name 2022_11_02_fdpf_ATZ_ROLE_migration --profile migration|○
+|{counter:cmd} |fdpf_ATZ_USER_prod|aws dynamodb create-backup --table-name fdpf_ATZ_USER_prod --backup-name 2022_11_02_fdpf_ATZ_USER_migration --profile migration|○
+|{counter:cmd} |fdpf_CVRID_device_mapping_prod|aws dynamodb create-backup --table-name fdpf_CVRID_device_mapping_prod --backup-name 2022_11_02_fdpf_CVRID_device_mapping_migration --profile migration|○
+|{counter:cmd} |fdpf_CVRID_model_mapping_prod|aws dynamodb create-backup --table-name fdpf_CVRID_model_mapping_prod --backup-name 2022_11_02_fdpf_CVRID_model_mapping_migration --profile migration
+|○
+|{counter:cmd} |adrs_info_tbl-migration|aws dynamodb create-backup --table-name adrs_info_tbl-migration --backup-name 2022_11_02_adrs_info_tbl-migration --profile migration|○
+|{counter:cmd} |alarm_history_tbl_migration|aws dynamodb create-backup --table-name alarm_history_tbl_migration --backup-name 2022_11_02_alarm_history_tbl_migration --profile migration|○
+|{counter:cmd} |alarm_info_tbl_migration|aws dynamodb create-backup --table-name alarm_info_tbl_migration --backup-name 2022_11_02_alarm_info_tbl_migration --profile migration|○
+|{counter:cmd} |alarm_setting_tbl_migration|aws dynamodb create-backup --table-name alarm_setting_tbl_migration --backup-name 2022_11_02_alarm_setting_tbl_migration --profile migration|○
+|{counter:cmd} |box_info_tbl_migration|aws dynamodb create-backup --table-name box_info_tbl_migration --backup-name 2022_11_02_box_info_tbl_migration --profile migration|○
+|{counter:cmd} |crypto_tbl_migration|aws dynamodb create-backup --table-name crypto_tbl_migration --backup-name 2022_11_02_crypto_tbl_migration --profile migration|○
+|{counter:cmd} |device_connection_tbl_migration|aws dynamodb create-backup --table-name device_connection_tbl_migration --backup-name 2022_11_02_device_connection_tbl_migration --profile migration|○
+|{counter:cmd} |device_info_tbl_migration|aws dynamodb create-backup --table-name device_info_tbl_migration --backup-name 2022_11_02_device_info_tbl_migration --profile migration|○
+|{counter:cmd} |device_res_tbl_migration|aws dynamodb create-backup --table-name device_res_tbl_migration --backup-name 2022_11_02_device_res_tbl_migration --profile migration|○
+|{counter:cmd} |device_token_tbl_migration|aws dynamodb create-backup --table-name device_token_tbl_migration --backup-name 2022_11_02_device_token_tbl_migration --profile migration|○
+|{counter:cmd} |device_user_tbl_migration|aws dynamodb create-backup --table-name device_user_tbl_migration --backup-name 2022_11_02_device_user_tbl_migration --profile migration|○
+|{counter:cmd} |franchise_store_tbl_migration|aws dynamodb create-backup --table-name franchise_store_tbl_migration --backup-name 2022_11_02_franchise_store_tbl_migration --profile migration|○
+|{counter:cmd} |loan_group_tbl_migration|aws dynamodb create-backup --table-name loan_group_tbl_migration --backup-name 2022_11_02_loan_group_tbl_migration --profile migration|○
+|{counter:cmd} |loan_history_tbl_migration|aws dynamodb create-backup --table-name loan_history_tbl_migration --backup-name 2022_11_02_loan_history_tbl_migration --profile migration|○
+|{counter:cmd} |loan_info_tbl_migration|aws dynamodb create-backup --table-name loan_info_tbl_migration --backup-name 2022_11_02_loan_info_tbl_migration --profile migration|○
+|{counter:cmd} |logic_file_tbl_migration|aws dynamodb create-backup --table-name logic_file_tbl_migration --backup-name 2022_11_02_logic_file_tbl_migration --profile migration|○
+|{counter:cmd} |logic_info_tbl_migration|aws dynamodb create-backup --table-name logic_info_tbl_migration --backup-name 2022_11_02_logic_info_tbl_migration --profile migration|○
+|{counter:cmd} |log_history_tbl_migration|aws dynamodb create-backup --table-name log_history_tbl_migration --backup-name 2022_11_02_log_history_tbl_migration --profile migration|○
+|{counter:cmd} |notice_his_tbl_migration|aws dynamodb create-backup --table-name notice_his_tbl_migration --backup-name 2022_11_02_notice_his_tbl_migration --profile migration|○
+|{counter:cmd} |notice_info_tbl_migration|aws dynamodb create-backup --table-name notice_info_tbl_migration --backup-name 2022_11_02_notice_info_tbl_migration --profile migration|○
+|{counter:cmd} |notice_setting_tbl_migration|aws dynamodb create-backup --table-name notice_setting_tbl_migration --backup-name 2022_11_02_notice_setting_tbl_migration --profile migration|○
+|{counter:cmd} |operator_account_tbl_migration|aws dynamodb create-backup --table-name operator_account_tbl_migration --backup-name 2022_11_02_operator_account_tbl_migration --profile migration|○
+|{counter:cmd} |operator_history_tbl_migration|aws dynamodb create-backup --table-name operator_history_tbl_migration --backup-name 2022_11_02_operator_history_tbl_migration --profile migration|○
+|{counter:cmd} |order_info_tbl_migration|aws dynamodb create-backup --table-name order_info_tbl_migration --backup-name 2022_11_02_order_info_tbl_migration --profile migration|○
+|{counter:cmd} |receive_op_tbl_migration|aws dynamodb create-backup --table-name receive_op_tbl_migration --backup-name 2022_11_02_receive_op_tbl_migration --profile migration|○
+|{counter:cmd} |signage_info_tbl_migration|aws dynamodb create-backup --table-name signage_info_tbl_migration --backup-name 2022_11_02_signage_info_tbl_migration --profile migration|○
+|{counter:cmd} |store_info_tbl_migration|aws dynamodb create-backup --table-name store_info_tbl_migration --backup-name 2022_11_02_store_info_tbl_migration --profile migration|○
+|{counter:cmd} |store_user_tbl_migration|aws dynamodb create-backup --table-name store_user_tbl_migration --backup-name 2022_11_02_store_user_tbl_migration --profile migration|○
+|{counter:cmd} |temperature_history_tbl_migration|aws dynamodb create-backup --table-name temperature_history_tbl_migration --backup-name 2022_11_02_temperature_history_tbl_migration --profile migration|○
+|{counter:cmd} |temperature_info_tbl_migration|aws dynamodb create-backup --table-name temperature_info_tbl_migration --backup-name 2022_11_02_temperature_info_tbl_migration --profile migration|○
+
+|===
+
+==== AWSリソースの設定変更
+
+* プラットフォーム移行後にコンテナサービスを利用しないための変更を実施する
+* リソース削除はプラットフォーム移行後から一定期間（一週間程度）経過した後に実施する
+
+.変更するリソース
+[cols="1,2,4a,1",width=100%]
+|===
+|リソース|リソース名|変更内容|結果
+|API Gateway|fdpf-cmnsvc-ctr-migration|
+各リソースと関連付けされているLambdaとの関連づけを変更する
+
+具体的には以下の作業を実施
+
+* 結合タイプを「Lambda関数」から「Mock」へ変更する|○
+
+|RDS|fdpf-cmnsvc-ctr-migration|セキュリティグループのインバウンドルールを変更する|○
+|===
+
+=== テスト
+=== インフラ観点テスト
+
+[cols="1,4,2,6a,2",width=100%]
+.テストケース
+|===
+|No|テスト内容|確認|条件|結果
+|{counter:case} |コンテナ向けのAPI Gatewayを削除しても要冷機器アプリが稼働する
+|画面
+|
+* API GatewayとLambdaの結合を削除（変更する）
+
+[cols="1,1"]
+!===
+!メソッド名
+!Lambda
+!cognitocheck
+!fdpf_ATZ_cognitocheck_migration
+!confirmAuthorization
+!fdpf_ATZ_confirmAuthorization_migration	
+!destroyResourceOperationToken
+!fdpf_ATZ_destroyResourceOperationToken_migration
+!getAccessibleScopeData 
+!fdpf_ATZ_getAccessibleScopeData_migration
+!getResourceOperationToken
+!fdpf_ATZ_getResourceOperationToken_migration
+!updateAuthRegistration
+!fdpf_ATZ_updateAuthRegistration_migration
+!updateUserRegistration
+!fdpf_ATZ_updateUserRegistration_migration
+!===
+|OK
+|{counter:case} |RDSのセキュリティグループ変更後も要冷機器アプリが稼働する
+|画面
+|fdpf-cmnsvc-reha
+|OK
+
+|===
+
+== 移行後作業
+=== バックアップデータ削除
+以下のコマンドを実行する +
+
+* delete_backupdate.bat
+** batファイルの内容は以下の通り
+
+[source,bat]
+----
+include::{sourcedir}/delete_backupdata.bat[]
+
+----

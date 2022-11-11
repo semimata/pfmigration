@@ -1,0 +1,109 @@
+= 軽量プラットフォーム移行手順書兼報告書
+:lang: ja
+:doctype: book
+:author: クラウド開発課
+:revnumber: 1.0
+:version-label: バージョン
+:revdate: 2022年10月26日
+:toc: left
+:toclevels: 4
+:toc-title: 目次
+:sectnums:
+:sectnumlevels: 4
+:table-caption: 表
+:imagesdir: images
+:nofooter: true
+:scripts: cjk
+
+
+== 作業内容
+
+軽量化プラットフォーム移行時にインフラでは以下の２項目の作業を実施する
+
+.作業内容
+[cols="1,2a,2",width=100%]
+|===
+|作業工程|内容|詳細
+|移行作業時|バックアップ取得|軽量プラットフォーム移行後に継続利用するデータのバックアップを取得する
+|移行作業後|不要リソース削除|軽量プラットフォーム移行後に不要となるクラウドリソースを削除する
+|===
+
+== 詳細作業
+
+=== バックアップ
+軽量化プラットフォーム移行後にも継続利用するデータのバックアップを取得する +
+取得するデータソースは、DynamoDBのテーブル +
+
+.プラットフォーム移行作業記録
+[cols="1,1,1,1",width=100%]
+|===
+|作業開始時刻|作業終了時間|担当者|作業結果
+|YYYY/MM/DD-hh:mm|YYYY/MM/DD hh-mm|伊藤|完了
+|===
+
+[%always]
+<<<
+
+include::detail/nosql_list.adoc[]
+
+[%always]
+<<<
+
+include::detail/nosql_backup_cmd.adoc[]
+
+
+[%always]
+<<<
+
+=== AWSリソースの変更作業
+
+* プラットフォーム移行後にコンテナサービスを利用しないための変更を実施する
+* リソース削除はプラットフォーム移行後から一定期間（一週間程度）経過した後に実施する
+
+.変更するリソース
+[cols="1,2,4a",width=100%]
+|===
+|リソース|リソース名|変更内容
+|API Gateway|fdpf-cmnsvc-(環境名)|
+各リソースと関連付けされているLambdaとの関連づけを変更する
+
+具体的には以下の作業を実施
+
+* 結合タイプを「Lambda関数」から「Mock」へ変更する
+
+|RDS|fdpf-cmnsvc-(環境名)|セキュリティグループのインバウンドルールを削除する
+|===
+
+=== テスト
+
+[cols="1,4,2,6a,2",width=100%]
+.テストケース
+|===
+|No|テスト内容|確認|条件|結果
+|{counter:case} |コンテナ向けのAPI Gatewayを削除しても要冷機器アプリが稼働する
+|画面
+|
+* API GatewayとLambdaの結合を削除（変更する）
+
+[cols="1,1"]
+!===
+!メソッド名
+!Lambda
+!cognitocheck
+!fdpf_ATZ_cognitocheck_(環境名)
+!confirmAuthorization
+!fdpf_ATZ_confirmAuthorization_(環境名)
+!destroyResourceOperationToken
+!fdpf_ATZ_destroyResourceOperationToken_(環境名)
+!getAccessibleScopeData 
+!fdpf_ATZ_getAccessibleScopeData_(環境名)
+!getResourceOperationToken
+!fdpf_ATZ_getResourceOperationToken_(環境名)
+!updateAuthRegistration
+!fdpf_ATZ_updateAuthRegistration_(環境名)
+!updateUserRegistration
+!fdpf_ATZ_updateUserRegistration_(環境名)
+!===
+|
+
+|===

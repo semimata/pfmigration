@@ -1,0 +1,484 @@
+= 要冷機器アプリケーション移行手順
+:lang: ja
+:doctype: book
+:author: PSDCD
+:revnumber: 1.0
+:version-label: バージョン
+:revdate: 2022年10月26日
+:toc: left
+:toclevels: 3
+:toc-title: 目次
+:sectnums:
+:chapter-signifier: 章
+:sectnumlevels: 4
+:table-caption: 表
+:imagesdir: images
+//:nofooter: yes
+
+== 本書の目的
+本書は、要冷機器アプリケーションはVer1.0.2からVer1.0.3に更新する時、移行実施手順について記述するものである。
+
+=== 用語の定義
+本書で使用する用語の定義を示す。
+
+.用語
+[cols="2,7",width=100%]
+|===
+|用語|説明
+|リハーサル環境|STGおよび本番環境の移行作業を検証する環境。作成した手順書の確認を行う。リハーサル環境構成はSTG環境と同じ構成とする
+|STG環境|本番環境にリリースするプログラム稼働を確認する環境
+|本番環境|お客様向けサービスを提供する環境
+|===
+
+== 実施STEP1-リソース変更
+
+=== 新規作成リソース
+
+==== SecretsManager
+
+Lambdaの以下環境変数を記録する。
+
+- AccessKeyId
+- SecretAccessKey
+
+.Lambda
+[cols="2,7",width=100%]
+|===
+|環境|Lambda
+|リハーサル環境|ccdlvy-eqpAccess-http-migration
+|STG環境|ssc-stg-eqpAccess-http
+|本番環境|ccdlvy-eqpAccess-http-prod
+|===
+
+上記の環境変数はSecretsManagerに保存する。
+
+.SecretManager
+[cols="2,7",width=100%]
+|===
+|環境|鍵名称
+|リハーサル環境|ccdlvy-secret-key
+|STG環境|ccdlvy-secret-key
+|本番環境|ccdlvy-secret-key
+|===
+
+作成方法：
+
+image::migration_secretsKey1.jpg[]
+
+image::migration_secretsKey2.jpg[]
+
+image::migration_secretsKey3.jpg[]
+
+==== 店舗情報テーブルにグローバルインデックス作成
+
+.店舗情報テーブル
+[cols="2,7",width=100%]
+|===
+|環境|テーブル名
+|リハーサル環境|store_info_tbl-migration
+|STG環境|stg_store_info_tbl
+|本番環境|ccdlvy_store_info_tbl_prod
+|===
+
+グローバルインデックス：
+
+ fstore_id_index
+   PK:fstore_id(String)
+   SK:store_id(String)
+
+
+==== Lambda実行ロールの設定
+
+・アプリサーバLambdaの実行ロールにLambda_FullAccess権限を追加
+
+.アプリサーバLambda
+[cols="2,7",width=100%]
+|===
+|環境|Lambda
+|リハーサル環境|ccdlvy-app-server-migration
+|STG環境|stg-app-server
+|本番環境|ccdlvy-app-server-prod
+|===
+
+image::appServer-LambdaRole.jpg[]
+
+・デバイスサーバLambdaの実行ロールにSecretsManagerReadWrite権限を追加
+
+.デバイスサーバLambda
+[cols="2,7",width=100%]
+|===
+|環境|Lambda
+|リハーサル環境|ccdlvy-eqpAccess-http-migration
+|STG環境|ssc-stg-eqpAccess-http
+|本番環境|ccdlvy-eqpAccess-http-prod
+|===
+
+image::deviceServer-LambdaRole.jpg[]
+
+[%always]
+
+<<<
+
+== 実施STEP2-ソフトデプロイ
+
+=== デプロイパッケージ作成
+
+==== ソースコート置き場所
+
+svnリポジトリ：https://ssdc-svn-0.psdcd.local/svn/CCBD-SmartStoreSystem
+
+.ソースコード
+[cols="3,4",width=100%]
+|===
+|コンポーネント|置き場所
+|WEBコンテンツ|
+\trunk\03_WebAppServer\04_SWC\01_WebUIContents
+\01_Src\BusinessServer_WebUI
+|アプリサーバ|
+\trunk\03_WebAppServer\04_SWC\02_WebApiServer
+\01_Src\WebApiServer\SmartStore
+|アプリサーバ貸出設定バッチ|\trunk\03_WebAppServer\04_SWC\02_WebApiServer
+\01_Src\WebBatchServer\LoanSetting
+|アプリサーバ貸出回収バッチ|\trunk\03_WebAppServer\04_SWC\02_WebApiServer
+\01_Src\WebBatchServer\LoanRecycle
+|アプリサーバサービス通知バッチ|\trunk\03_WebAppServer\04_SWC\02_WebApiServer
+\01_Src\WebBatchServer\SendNotice\SendNotice
+|デバイスサーバ|\trunk\02_DeviceServer\04_SWC\01_Src\device_server
+|デバイスサーバの設備オフラインチェック|\trunk\02_DeviceServer\04_SWC\01_Src
+\OfflineCheckLambda
+|===
+
+==== WEBコンテンツデプロイパッケージ作成
+
+* STEP1
+
+VSCode起動
+
+* STEP2
+
+\trunk\03_WebAppServer\04_SWC\01_WebUIContents\01_Src\BusinessServer_WebUI　フォルダを開く
+
+* STEP3
+
+node_modules.zipを解凍する
+
+* STEP4
+
+.env.XXX　ファイル中で設定内容を確認する
+
+ ※XXXは環境の省略名
+ リハーサル環境：.env.migration
+ STG環境: .env.stg
+ 本番環境：.env.production
+
+ ファイル内容：
+  VUE_APP_VERSION : Ver1.0.3
+  VUE_APP_BASE_API: アプリサーバRESTAPIGatewayのURL
+  VUE_APP_ACCESS_KEY_ID: 運行用IAMアカウントAccessKeyId
+  VUE_APP_SECRET_ACCESS_KEY: 運行用IAMアカウントSecretAccessKey
+  VUE_APP_REGION: ap-northeast-1
+  VUE_APP_BUCKETNAME_PRV: サイネージ・広告リソースの置き場所S3名称
+
+* STEP5　WEBコンテンツビルド
+
+package.jsonを開く、各環境のbuildコマンドを確認
+
+   "build:migration": "vue-cli-service build --mode migration",
+   "build:stg": "vue-cli-service build --mode stg",
+   "build:prod": "vue-cli-service build",
+
+
+PowerShellを開き、ビルドする場所に遷移する（npm run build:migration）
+
+image::web-build.jpg[]
+
+ビルドが成功すると、distフォルダーが⽣成されます。
+
+image::web-dist.jpg[]
+
+distファイルをwebuiContents_v1.0.3.zipに圧縮する。圧縮後のzipファイルに対してSHA256ハッシュ値を計算してファイルに保存すること。
+
+Windowsの場合：
+
+C:\>certutil -hashfile webuiContents_v1.0.3.zip SHA256 > webuiContents_v1.0.3.hash
+
+* STEP6 デプロイファイルコミット
+
+作成されるzipファイルとhashファイルはSVNにコミットされる。
+
+置き場所：
+
+\trunk\03_WebAppServer\04_SWC\99_Release\Ver1.0.3@yyyymmdd-XXX\01_WebUIContents\
+
+※XXXは環境の省略名
+
+==== アプリサーバデプロイパッケージ作成
+
+* STEP1　環境実行変数設定
+
+環境変数保存ファイル: aws.js
+置き場所：\trunk\03_WebAppServer\04_SWC\02_WebApiServer\01_Src\WebApiServer\SmartStore\config
+
+ リハーサル環境: env: 'migration'
+ STG環境: env: 'stg'
+ 本番環境：env: 'prod'
+
+* STEP2　デプロイファイル作成
+
+ npm ci 
+
+を実行する。
+
+ npm prune --production
+
+を実行する。
+
+\trunk\03_WebAppServer\04_SWC\02_WebApiServer\01_Src\WebApiServer\SmartStore下の以下ファイルを抽出し、新しいフォルダーにコピーする。
+
+image::appServer-build.jpg[]
+
+該当フォルダーをwebapiServer_v1.0.3.zipに圧縮する。圧縮後のzipファイルに対してSHA256ハッシュ値を計算してファイルに保存すること。
+
+Windowsの場合：
+
+C:\>certutil -hashfile webapiServer_v1.0.3.zip SHA256 > webapiServer_v1.0.3.hash
+
+* STEP3　デプロイファイルコミット
+
+作成されるzipファイルとhashファイルはSVNにコミットされる。
+
+置き場所：
+
+\trunk\03_WebAppServer\04_SWC\99_Release\Ver1.0.3@yyyymmdd-XXX\02_WebApiServer\
+
+※XXXは環境の省略名
+
+==== アプリサーバ貸出設定バッチデプロイパッケージ作成
+
+* STEP1　環境設定
+
+index.js中のTableNameを修正する。※各環境のDynamoDBテーブル名
+
+* STEP2　デプロイファイル作成
+
+index.jsをbatchLoanSetting_v1.0.3.zipに圧縮する。圧縮後のzipファイルに対してSHA256ハッシュ値を計算してファイルに保存すること。
+
+Windowsの場合：
+
+C:\>certutil -hashfile batchLoanSetting_v1.0.3.zip SHA256 > batchLoanSetting_v1.0.3.hash
+
+* STEP3　デプロイファイルコミット
+
+作成されるzipファイルとhashファイルはSVNにコミットされる。
+
+置き場所：
+
+\trunk\03_WebAppServer\04_SWC\99_Release\Ver1.0.3@yyyymmdd-XXX\03_Batch\LoanSetting\
+
+※XXXは環境の省略名
+
+==== アプリサーバ貸出回収バッチデプロイパッケージ作成
+
+* STEP1　環境設定
+
+index.js中のTableNameを修正する。※各環境のDynamoDBテーブル名
+
+* STEP2　デプロイファイル作成
+
+index.jsをbatchLoanRecycle_v1.0.3.zipに圧縮する。圧縮後のzipファイルに対してSHA256ハッシュ値を計算してファイルに保存すること。
+
+Windowsの場合：
+
+C:\>certutil -hashfile batchLoanRecycle_v1.0.3.zip SHA256 > batchLoanRecycle_v1.0.3.hash
+
+* STEP3　デプロイファイルコミット
+
+作成されるzipファイルとhashファイルはSVNにコミットされる。
+
+置き場所：
+
+\trunk\03_WebAppServer\04_SWC\99_Release\Ver1.0.3@yyyymmdd-XXX\03_Batch\LoanRecycle\
+
+※XXXは環境の省略名
+
+==== アプリサーバサービス通知バッチデプロイパッケージ作成
+
+* STEP1　環境設定
+
+index.js中のTableNameを修正する。※各環境のDynamoDBテーブル名
+
+* STEP2　ビルド
+
+VSCodeを起動、該当フォルダ以内に遷移、npm ci コマンドを実行し、node_modulesフォルダを生成する。
+
+* STEP3　デプロイファイル作成
+
+SendNoticeフィルターをbatchSendNotice_v1.0.3.zipに圧縮する。圧縮後のzipファイルに対してSHA256ハッシュ値を計算してファイルに保存すること。
+
+Windowsの場合：
+
+C:\>certutil -hashfile batchSendNotice_v1.0.3.zip SHA256 > batchSendNotice_v1.0.3.hash
+
+* STEP4　デプロイファイルコミット
+
+作成されるzipファイルとhashファイルはSVNにコミットされる。
+
+置き場所：
+
+\trunk\03_WebAppServer\04_SWC\99_Release\Ver1.0.3@yyyymmdd-XXX\03_Batch\SendNotice\
+
+※XXXは環境の省略名
+
+==== デバイスサーバデプロイパッケージ作成
+
+* STEP1　環境実行変数設定
+
+環境変数保存ファイル: AWSConfig.js
+置き場所：\trunk\02_DeviceServer\04_SWC\01_Src\device_server
+
+ リハーサル環境: env: 'migration'
+ STG環境: env: 'stg'
+ 本番環境：env: 'prod'
+
+* STEP2　デプロイファイル作成
+
+ npm ci 
+
+を実行する。
+
+\trunk\02_DeviceServer\04_SWC\01_Src\device_server下の以下ファイルを抽出し、新しいフォルダーにコピーする。
+
+image::devcieServer-build.jpg[]
+
+該当フォルダーをdeviceServer_v1.0.3.zipに圧縮する。圧縮後のzipファイルに対してSHA256ハッシュ値を計算してファイルに保存すること。
+
+Windowsの場合：
+
+C:\>certutil -hashfile deviceServer_v1.0.3.zip SHA256 > deviceServer_v1.0.3.hash
+
+* STEP3　デプロイファイルコミット
+
+作成されるzipファイルとhashファイルはSVNにコミットされる。
+
+置き場所：
+
+\trunk\02_DeviceServer\04_SWC\99_Release\Ver1.0.3@yyyymmdd-XXX\
+
+※XXXは環境の省略名
+
+==== デバイスサーバの設備オフラインチェックデプロイパッケージ作成
+
+* STEP1　環境実行変数設定
+
+環境変数保存ファイル: AWSConfig.js
+置き場所：\trunk\02_DeviceServer\04_SWC\01_Src\OfflineCheckLambda
+
+ リハーサル環境: env: 'migration'
+ STG環境: env: 'stg'
+ 本番環境：env: 'prod'
+
+* STEP2　デプロイファイル作成
+
+\trunk\02_DeviceServer\04_SWC\01_Src\OfflineCheckLambda下の以下ファイルを抽出し、新しいフォルダーにコピーする。
+
+image::offLineCheck-build.jpg[]
+
+該当フォルダーをoffLineCheck_v1.0.3.zipに圧縮する。圧縮後のzipファイルに対してSHA256ハッシュ値を計算してファイルに保存すること。
+
+Windowsの場合：
+
+C:\>certutil -hashfile offLineCheck_v1.0.3.zip SHA256 > offLineCheck_v1.0.3.hash
+
+* STEP3　デプロイファイルコミット
+
+作成されるzipファイルとhashファイルはSVNにコミットされる。
+
+置き場所：
+
+\trunk\02_DeviceServer\04_SWC\99_Release\Ver1.0.3@yyyymmdd-XXX\
+
+※XXXは環境の省略名
+
+==== リリースノード作成
+
+\99_Management\99_そのた\01_ReleaseVersion　下の「要冷機器監視システム_クラウド_ReleaseNote.xlsx」を更新する。
+\99_Management\99_そのた\01_ReleaseVersion　下の「要冷機器監視システム_クラウドバージョン管理表.xlsx」を更新する。
+
+[%always]
+<<<
+
+=== ソフトデプロイ
+
+==== 環境チェックリスト作成
+
+\trunk\99_Management\99_そのた\01_ReleaseVersion　下に「要冷機器監視システム環境設置チェックリスト-XXXVer1.0.3.xlsx」を作成する。
+
+==== リリース後動作確認チェックリスト作成
+
+\trunk\99_Management\99_そのた\01_ReleaseVersion　下に「要冷機器監視システムリリース後動作確認-XXXVer1.0.3.xlsx」を作成する。
+
+※リリース前、評価用データを準備することが必要。
+
+==== Lambdaデプロイ
+
+AWSに登録する、コンソール画面により、各LambdaのランタイムバージョンはNodejs 16に設定する。
+
+image::nodejs-up.jpg[]
+
+各Lambdaにzipファイルをアップロードする。
+
+※Lambdaにデプロイパッケージは「要冷機器監視システム環境設置チェックリスト-XXXVer1.0.3.xlsx」を参照する。
+
+==== Webコンテンツデプロイ
+
+* STEP1　AWSに登録する、コンソール画面により、WEBコンテンツ置くS3中で
+ - favicon.ico
+ - index.html
+ - static/
+
+を削除し、新規生成distフォルダー内のすべてのファイルを選択し、アップロードする。
+
+※S3 Browserも利用可
+
+image::webcontents-up.jpg[]
+
+* STEP2　CloudFront再デプロイ
+
+WEBコンテンツはS3に更新成功後、CloudFrontの再デプロイが必要である。
+
+CloudFrontの最新キャッシュを削除する。
+
+image::cloudFront-up1.jpg[]
+
+image::cloudFront-up2.jpg[]
+
+[%always]
+<<<
+
+== リリース後動作確認
+
+=== 環境設定チェック
+
+「要冷機器監視システム環境設置チェックリスト-XXXVer1.0.3.xlsx」中の項目のチェックを行う。
+
+利用不要なリソースを削除：
+
+ API Gateway:
+  リハーサル環境：eqpAccesshttp-migration
+  STG環境：ssc-dev-eqpAccess-http-stg
+  本番環境：ccdlvy-eqpAccess-http-prod
+  
+利用不要なLambdaの環境変数を削除：
+
+ 環境変数：
+  AccessKeyIdとSecretAccessKey
+ Lambda:
+  リハーサル環境：ccdlvy-eqpAccess-http-migration
+  STG環境：ssc-stg-eqpAccess-http
+  本番環境：ccdlvy-eqpAccess-http-prod
+
+=== 動作確認実施
+
+「要冷機器監視システムリリース後動作確認-XXXVer1.0.3.xlsx」中のテスト項目に従って、動作確認を実施する。
+
+NOTE: リハーサル環境とSTG環境でNG評価項目があれば、直ぐに解決する。本番環境について、検討待ち

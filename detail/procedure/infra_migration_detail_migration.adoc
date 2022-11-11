@@ -1,0 +1,244 @@
+= 軽量プラットフォーム移行手順書兼報告書
+:lang: ja
+:doctype: book
+:author: クラウド開発課
+:revnumber: 1.0
+:version-label: バージョン
+:revdate: 2022年10月20日
+:toc: left
+:toclevels: 3
+:toc-title: 目次
+:sectnums:
+:sectnumlevels: 4
+:table-caption: 表
+:imagesdir: images
+:nofooter: yes
+
+
+== 作業内容
+
+軽量化プラットフォーム移行時にインフラでは以下の２項目の作業を実施する
+
+.作業内容
+[cols="1,2a,2",width=100%]
+|===
+|作業工程|内容|詳細
+|移行作業時|バックアップ取得|軽量プラットフォーム移行後に継続利用するデータのバックアップを取得する
+|移行作業後|不要リソース削除|軽量プラットフォーム移行後に不要となるクラウドリソースを削除する
+|===
+
+== 詳細作業
+
+=== バックアップ
+軽量化プラットフォーム移行後にも継続利用するデータのバックアップを取得する +
+取得するデータソースは、DynamoDBのテーブル +
+
+.作業記録
+[cols="1,1,1,1",width=100%]
+|===
+|作業開始時刻|作業終了時間|担当者|作業結果
+|YYYY/MM/DD-hh:mm|YYYY/MM/DD hh-mm|伊藤|完了
+|===
+
+==== バックアップ対象テーブル
+
+[cols="1,2,1,1,1",width=100%]
+|===
+|No|テーブル名|本番環境|STG環境|補足
+|{counter:tbl} |ccdlvy_adrs_info_tbl_prod|○|-|-
+|{counter:tbl} |ccdlvy_alarm_history_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_alarm_info_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_alarm_setting_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_box_info_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_crypto_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_device_connection_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_device_info_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_device_res_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_device_token_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_device_user_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_franchise_store_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_loan_group_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_loan_history_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_loan_info_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_log_history_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_logic_file_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_logic_info_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_notice_his_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_notice_info_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_notice_setting_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_operator_account_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_operator_history_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_order_info_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_receive_op_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_run_statistics_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_signage_info_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_store_info_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_store_user_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_temperature_history_tbl_prod|○|-|
+|{counter:tbl} |ccdlvy_temperature_info_tbl_prod|○|-|
+|{counter:tbl} |fdpf_ATZ_APP_prod|✕|-|
+|{counter:tbl} |fdpf_ATZ_AUTHORITY_prod|✕|-|
+|{counter:tbl} |fdpf_ATZ_LOCK_prod|✕|-|
+|{counter:tbl} |fdpf_ATZ_RESOURCE_OPERATION_TOKEN_prod|✕|-|
+|{counter:tbl} |fdpf_ATZ_ROLE_prod|✕|-|
+|{counter:tbl} |fdpf_ATZ_USER_prod|✕|-|
+|{counter:tbl} |fdpf_CVRID_device_mapping_prod|✕|-|
+|{counter:tbl} |fdpf_CVRID_model_mapping_prod|✕|-|
+|{counter:tbl} |stg_adrs_info_tbl|-|○|
+|{counter:tbl} |stg_alarm_history_tbl|-|○|
+|{counter:tbl} |stg_alarm_info_tbl|-|○|
+|{counter:tbl} |stg_alarm_setting_tbl|-|○|
+|{counter:tbl} |stg_box_info_tbl|-|○|
+|{counter:tbl} |stg_crypto_tbl|-|○|
+|{counter:tbl} |stg_device_connection_tbl|-|○|
+|{counter:tbl} |stg_device_info_tbl|-|○|
+|{counter:tbl} |stg_device_res_tbl|-|○|
+|{counter:tbl} |stg_device_run_statistic|-|○|
+|{counter:tbl} |stg_device_token_tbl|-|○|
+|{counter:tbl} |stg_device_user_tbl|-|○|
+|{counter:tbl} |stg_franchise_store_tbl|-|○|
+|{counter:tbl} |stg_kupon_csv_tbl|-|○|
+|{counter:tbl} |stg_loan_group_tbl|-|○|
+|{counter:tbl} |stg_loan_history_tbl|-|○|
+|{counter:tbl} |stg_loan_info_tbl|-|○|
+|{counter:tbl} |stg_log_history_tbl|-|○|
+|{counter:tbl} |stg_logic_file_tbl|-|○|
+|{counter:tbl} |stg_logic_info_tbl|-|○|
+|{counter:tbl} |stg_notice_his_tbl|-|○|
+|{counter:tbl} |stg_notice_info_tbl|-|○|
+|{counter:tbl} |stg_notice_setting_tbl|-|○|
+|{counter:tbl} |stg_operator_account_tbl|-|○|
+|{counter:tbl} |stg_operator_history_tbl|-|○|
+|{counter:tbl} |stg_order_info_tbl|-|○|
+|{counter:tbl} |stg_receive_op_tbl|-|○|
+|{counter:tbl} |stg_run_statistics_tbl|-|○|
+|{counter:tbl} |stg_signage_info_tbl-|-|○|
+|{counter:tbl} |stg_store_info_tbl|-|○|
+|{counter:tbl} |stg_store_user_tbl|-|○|
+|{counter:tbl} |stg_temperature_history_tbl|-|○|
+|{counter:tbl} |stg_temperature_info_tbl|-|○|
+|{counter:tbl} |stg_version_admin_tbl|-|○|
+|{counter:tbl} |fdpf_ATZ_APP_stg|-|✕|
+|{counter:tbl} |fdpf_ATZ_AUTHORITY_stg|-|✕|
+|{counter:tbl} |fdpf_ATZ_LOCK_stg|-|✕|
+|{counter:tbl} |fdpf_ATZ_RESOURCE_OPERATION_TOKEN_stg|-|✕|
+|{counter:tbl} |fdpf_ATZ_ROLE_stg|-|✕|
+|{counter:tbl} |fdpf_ATZ_USER_stg|-|✕|
+|{counter:tbl} |fdpf_CVRID_DMP_stg|-|✕|
+|{counter:tbl} |fdpf_CVRID_MMP_stg|-|✕|
+|{counter:tbl} |fdpf_EXT_credentials_stg|-|✕|
+|===
+
+==== バックアップ作業
+
+. RDSバックアップを取得する
+
+aws rds create-db-snapshot --db-instance-identifier fdpf-cmnsvc-reha --db-snapshot-identifier fdpf-cmnsvc-reha-1102 --profile migration
+
+
+. 不要なRDSバックアップを削除
+aws rds delete-db-snapshot --db-snapshot-identifier fdpf-cmnsvc-reha-1102 --profile migration
+
+
+.migration環境のバックアップコマンド
+[cols="1,2,10,1",width=100%]
+|===
+|No|テーブル名|コマンド|結果
+|{counter:stgcmd} |fdpf_ATZ_APP_prod |aws dynamodb create-backup --table-name fdpf_ATZ_APP_prod --backup-name 2022_11_02_fdpf_ATZ_APP_migration|
+|{counter:stgcmd} |fdpf_ATZ_AUTHORITY_prod| aws dynamodb create-backup --table-name “fdpf_ATZ_AUTHORITY_prod" --backup-name 2022_11_02_fdpf_ATZ_AUTHORITY_migration|
+|{counter:stgcmd} |fdpf_ATZ_LOCK_prod|aws dynamodb create-backup --table-name “fdpf_ATZ_LOCK_prod" --backup-name 2022_10_30_fdpf_ATZ_LOCK_migration|
+|{counter:stgcmd} |fdpf_ATZ_RESOURCE_OPERATION_TOKEN_prod|aws dynamodb create-backup --table-name “fdpf_ATZ_RESOURCE_OPERATION_TOKEN_prod" --backup-name 2022_11_02_fdpf_ATZ_RESOURCE_OPERATION_TOKEN_migration|
+|{counter:stgcmd} |fdpf_ATZ_ROLE_prod|aws dynamodb create-backup --table-name “fdpf_ATZ_ROLE_prod" --backup-name 2022_11_02_fdpf_ATZ_ROLE_migration|
+|{counter:stgcmd} |fdpf_ATZ_USER_prod|aws dynamodb create-backup --table-name “fdpf_ATZ_USER_prod" --backup-name 2022_11_02_fdpf_ATZ_USER_migration|
+|{counter:stgcmd} |fdpf_CVRID_DMP_prod|aws dynamodb create-backup --table-name “fdpf_CVRID_DMP_prod" --backup-name 2022_11_02_fdpf_CVRID_DMP_migration|
+|{counter:stgcmd} |fdpf_CVRID_MMP_prod|aws dynamodb create-backup --table-name “fdpf_CVRID_MMP_prod" --backup-name 2022_11_02_fdpf_CVRID_MMP_migration|
+|{counter:stgcmd} |fdpf_EXT_credentials_prod|aws dynamodb create-backup --table-name “fdpf_EXT_credentials_prod" --backup-name 2022_11_02_fdpf_EXT_credentials_migration|
+|{counter:stgcmd} |adrs_info_tbl-migration|aws dynamodb create-backup --table-name “adrs_info_tbl-migration" --backup-name 2022_11_02_adrs_info_tbl-migration|
+|{counter:stgcmd} |alarm_history_tbl_migration|aws dynamodb create-backup --table-name “alarm_history_tbl_migration" --backup-name 2022_11_02_alarm_history_tbl_migration|
+|{counter:stgcmd} |alarm_info_tbl_migration|aws dynamodb create-backup --table-name “alarm_info_tbl_migration" --backup-name 2022_11_02_alarm_info_tbl_migration|
+|{counter:stgcmd} |alarm_setting_tbl_migration|aws dynamodb create-backup --table-name “alarm_setting_tbl_migration" --backup-name 2022_11_02_alarm_setting_tbl_migration|
+|{counter:stgcmd} |box_info_tbl_migration|aws dynamodb create-backup --table-name “box_info_tbl_migration" --backup-name 2022_11_02_box_info_tbl_migration|
+|{counter:stgcmd} |crypto_tbl_migration|aws dynamodb create-backup --table-name “crypto_tbl_migration" --backup-name 2022_11_02_crypto_tbl_migration|
+|{counter:stgcmd} |device_connection_tbl_migration|aws dynamodb create-backup --table-name “device_connection_tbl_migration" --backup-name 2022_11_02_device_connection_tbl_migration|
+|{counter:stgcmd} |device_info_tbl_migration|aws dynamodb create-backup --table-name “device_info_tbl_migration" --backup-name 2022_11_02_device_info_tbl_migration|
+|{counter:stgcmd} |device_res_tbl_migration|aws dynamodb create-backup --table-name “device_res_tbl_migration" --backup-name 2022_11_02_device_res_tbl_migration|
+|{counter:stgcmd} |device_run_statistic_migration|aws dynamodb create-backup --table-name “device_run_statistic_migration" --backup-name 2022_11_02_device_run_statistic_migration|
+|{counter:stgcmd} |device_token_tbl_migration|aws dynamodb create-backup --table-name “device_token_tbl_migration" --backup-name 2022_11_02_device_token_tbl_migration|
+|{counter:stgcmd} |device_user_tbl_migration|aws dynamodb create-backup --table-name “device_user_tbl_migration" --backup-name 2022_11_02_device_user_tbl_migration|
+|{counter:stgcmd} |franchise_store_tbl_migration|aws dynamodb create-backup --table-name “franchise_store_tbl_migration" --backup-name 2022_11_02_franchise_store_tbl_migration|
+|{counter:stgcmd} |kupon_csv_tbl_migration|aws dynamodb create-backup --table-name “kupon_csv_tbl_migration" --backup-name 2022_11_02_kupon_csv_tbl_migration|
+|{counter:stgcmd} |loan_group_tbl_migration|aws dynamodb create-backup --table-name “loan_group_tbl_migration" --backup-name 2022_11_02_loan_group_tbl_migration|
+|{counter:stgcmd} |loan_history_tbl_migration|aws dynamodb create-backup --table-name “loan_history_tbl_migration" --backup-name 2022_11_02_loan_history_tbl_migration|
+|{counter:stgcmd} |loan_info_tbl_migration|aws dynamodb create-backup --table-name “loan_info_tbl_migration" --backup-name 2022_11_02_loan_info_tbl_migration|
+|{counter:stgcmd} |log_history_tbl_migration|aws dynamodb create-backup --table-name “log_history_tbl_migration" --backup-name 2022_11_02_log_history_tbl_migration|
+|{counter:stgcmd} |logic_file_tbl_migration|aws dynamodb create-backup --table-name “logic_file_tbl_migration" --backup-name 2022_11_02_logic_file_tbl_migration|
+|{counter:stgcmd} |logic_info_tbl_migration|aws dynamodb create-backup --table-name “logic_info_tbl_migration" --backup-name 2022_11_02_logic_info_tbl_migration|
+|{counter:stgcmd} |notice_his_tbl_migration|aws dynamodb create-backup --table-name “notice_his_tbl_migration" --backup-name 2022_11_02_notice_his_tbl_migration|
+|{counter:stgcmd} |notice_info_tbl_migration|aws dynamodb create-backup --table-name “notice_info_tbl_migration" --backup-name 2022_11_02_notice_info_tbl_migration|
+|{counter:stgcmd} |notice_setting_tbl_migration|aws dynamodb create-backup --table-name “notice_setting_tbl_migration" --backup-name 2022_11_02_notice_setting_tbl_migration|
+|{counter:stgcmd} |operator_account_tbl_migration|aws dynamodb create-backup --table-name “operator_account_tbl_migration" --backup-name 2022_11_02_operator_account_tbl_migration|
+|{counter:stgcmd} |operator_history_tbl_migration|aws dynamodb create-backup --table-name “operator_history_tbl_migration" --backup-name 2022_11_02_operator_history_tbl_migration|
+|{counter:stgcmd} |order_info_tbl_migration|aws dynamodb create-backup --table-name “order_info_tbl_migration" --backup-name 2022_11_02_order_info_tbl_migration|
+|{counter:stgcmd} |receive_op_tbl_migration|aws dynamodb create-backup --table-name “receive_op_tbl_migration" --backup-name 2022_11_02_receive_op_tbl_migration|
+|{counter:stgcmd} |run_statistics_tbl_migration|aws dynamodb create-backup --table-name “run_statistics_tbl_migration" --backup-name 2022_11_02_run_statistics_tbl_migration|
+|{counter:stgcmd} |signage_info_tbl_migration|aws dynamodb create-backup --table-name “signage_info_tbl_migration" --backup-name 2022_11_02_signage_info_tbl_migration|
+|{counter:stgcmd} |store_info_tbl_migration|aws dynamodb create-backup --table-name “store_info_tbl_migration" --backup-name 2022_11_02_store_info_tbl_migration|
+|{counter:stgcmd} |store_user_tbl_migration|aws dynamodb create-backup --table-name “store_user_tbl_migration" --backup-name 2022_11_02_store_user_tbl_migration|
+|{counter:stgcmd} |temperature_history_tbl_migration|aws dynamodb create-backup --table-name “temperature_history_tbl_migration" --backup-name 2022_11_02_temperature_history_tbl_migration|
+|{counter:stgcmd} |temperature_info_tbl_migration|aws dynamodb create-backup --table-name “temperature_info_tbl_migration" --backup-name 2022_11_02_temperature_info_tbl_migration|
+|{counter:stgcmd} |version_admin_tbl_migration|aws dynamodb create-backup --table-name “version_admin_tbl_migration" --backup-name 2022_11_02_version_admin_tbl_migration|
+
+|===
+
+==== AWSリソースの変更作業
+
+* プラットフォーム移行後にコンテナサービスを利用しないための変更を実施する
+* リソース削除はプラットフォーム移行後から一定期間（一週間程度）経過した後に実施する
+
+.変更するリソース
+[cols="1,2,4a",width=100%]
+|===
+|リソース|リソース名|変更内容
+|API Gateway|fdpf-cmnsvc-(環境名)|
+各リソースと関連付けされているLambdaとの関連づけを変更する
+
+具体的には以下の作業を実施
+
+* 結合タイプを「Lambda関数」から「Mock」へ変更する
+
+|RDS|fdpf-cmnsvc-(環境名)|セキュリティグループのインバウンドルールを削除する
+|===
+
+==== テスト
+
+[cols="1,4,2,6a,2",width=100%]
+.テストケース
+|===
+|No|テスト内容|確認|条件|結果
+|{counter:case} |コンテナ向けのAPI Gatewayを削除しても要冷機器アプリが稼働する
+|画面
+|
+* API GatewayとLambdaの結合を削除（変更する）
+
+[cols="1,1"]
+!===
+!メソッド名
+!Lambda
+!cognitocheck
+!fdpf_ATZ_cognitocheck_(環境名)
+!confirmAuthorization
+!fdpf_ATZ_confirmAuthorization_(環境名)
+!destroyResourceOperationToken
+!fdpf_ATZ_destroyResourceOperationToken_(環境名)
+!getAccessibleScopeData 
+!fdpf_ATZ_getAccessibleScopeData_(環境名)
+!getResourceOperationToken
+!fdpf_ATZ_getResourceOperationToken_(環境名)
+!updateAuthRegistration
+!fdpf_ATZ_updateAuthRegistration_(環境名)
+!updateUserRegistration
+!fdpf_ATZ_updateUserRegistration_(環境名)
+!===
+|
+
+|===

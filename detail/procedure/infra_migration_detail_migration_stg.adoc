@@ -1,0 +1,178 @@
+= 軽量プラットフォーム移行手順書兼報告書（STG環境）
+:lang: ja
+:doctype: book
+:author: クラウド開発課
+:revnumber: 1.0
+:version-label: バージョン
+:revdate: 2022年11月14日
+:toc: left
+:toclevels: 3
+:toc-title: 目次
+:sectnums:
+:sectnumlevels: 4
+:table-caption: 表
+:imagesdir: images
+:sourcedir: ./cmd
+:nofooter: yes
+
+
+== 作業内容
+
+軽量化プラットフォーム移行時にインフラでは以下の２項目の作業を実施する
+
+.作業記録
+[cols="1,2,2,1,1",width=100%]
+|===
+|作業工程|作業開始時刻|作業終了時間|担当者|作業結果
+|移行時|2022年11月○○日 ○○時○○分|2022年○○月○○日 ○○時○○分|伊藤|
+|移行後|2022年11月○○日 ○○時○○分|2022年○○月○○日 ○○時○○分|伊藤|
+|===
+
+.作業内容
+[cols="1,2a,3a",width=100%]
+|===
+|作業工程|内容|詳細
+|移行作業時|バックアップ取得|軽量プラットフォーム移行後に継続利用するデータのバックアップを取得する
+|移行作業時|AWSリソース設定変更|
+
+* API Gatewayの変更（統合タイプの変更）
+* RDSのインバウンドセキュリティグループの変更
+|移行作業後|不要リソース削除|軽量プラットフォーム移行後に不要となるクラウドリソースを削除する
+|===
+
+== 詳細作業
+
+=== バックアップ
+
+* 軽量化プラットフォーム移行後にも継続利用するデータのバックアップを取得する +
+* 取得するデータソースは以下のリソース
+** RDS
+** Dynamodb Table
+
+==== バックアップ作業
+
+
+
+==== AWSリソースの設定変更
+
+* プラットフォーム移行後にコンテナサービスを利用しないための変更を実施する
+* リソース削除はプラットフォーム移行後から一定期間（一週間程度）経過した後に実施する
+
+.変更するリソース
+[cols="1,2a,4a,1",width=100%]
+|===
+|リソース|リソース名|変更内容|結果
+|API Gateway|
+
+* fdpf-cmnsvc-ctr-stg
+* fdpf-cmnsvc-authz-stg
+|各リソースと関連付けされているLambdaとの関連づけを変更する
+
+具体的には以下の作業を実施
+
+* 結合タイプを「Lambda関数」から「Mock」へ変更する|
+
+|RDS|fdpf-cmnsvc-stg|セキュリティグループのインバウンドルールを変更する|
+|===
+
+=== テスト
+=== インフラ観点テスト
+
+[cols="1,4,2,6a,2",width=100%]
+.テストケース
+|===
+|No|テスト内容|確認|条件|結果
+|{counter:case} |コンテナ向けのAPI Gatewayを削除しても要冷機器アプリが稼働する
+|画面
+|
+* API GatewayとLambdaの結合を削除（変更する）
+
+[cols="1,1"]
+!===
+!メソッド名
+!Lambda
+!cognitocheck
+!fdpf_ATZ_cognitocheck_stg
+!confirmAuthorization
+!fdpf_ATZ_confirmAuthorization_stg	
+!destroyResourceOperationToken
+!fdpf_ATZ_destroyResourceOperationToken_stg
+!getAccessibleScopeData 
+!fdpf_ATZ_getAccessibleScopeData_stg
+!getResourceOperationToken
+!fdpf_ATZ_getResourceOperationToken_stg
+!updateAuthRegistration
+!fdpf_ATZ_updateAuthRegistration_stg
+!updateUserRegistration
+!fdpf_ATZ_updateUserRegistration_stg
+!===
+|
+|{counter:case} |RDSのセキュリティグループ変更後も要冷機器アプリが稼働する
+|画面
+|fdpf-cmnsvc-stg
+|
+
+|===
+
+== 移行後作業
+=== 削除
+==== バックアップデータ
+移行作業前に取得したバックアップデータを削除する +
+削除は以下のコマンドを実行する +
+
+* delete_backupdate.bat
+
+[source,bat]
+----
+include::{sourcedir}/delete_backupdata_stg.bat[]
+
+----
+==== AWSリソース
+[cols="1,2,4,3",width=100%]
+.削除リソース
+|===
+|NO|サービス|リソース名|補足
+|{counter:del}|RDS|fdpf-cmnsvc-stg|該当インスタンスで取得したsnapshotも削除する
+|{counter:del}|EC2|i-0646139e63c5657c7|踏み台サーバ
+|{counter:del}|EC2|i-078f0837e59c37ab4|Kubernetes Master Node
+|{counter:del}|EC2|i-03df6405e49a87367|Kubernetes Worker Node 
+|{counter:del}|EC2|i-0cf373a90bd07d11e|Kubernetes Worker Node 
+|{counter:del}|EC2|i-0c828f78854cd5b79|Kubernetes Worker Node 
+|{counter:del}|EC2|i-0fc21221acc0a4b79|RM Server 
+|{counter:del}|DynamoDB|fdpf_ATZ_APP_stg| 
+|{counter:del}|DynamoDB|fdpf_ATZ_AUTHORITY_stg| 
+|{counter:del}|DynamoDB|fdpf_ATZ_LOCK_stg| 
+|{counter:del}|DynamoDB|fdpf_ATZ_RESOURCE_OPERATION_TOKEN_stg| 
+|{counter:del}|DynamoDB|fdpf_ATZ_ROLE_stg| 
+|{counter:del}|DynamoDB|fdpf_ATZ_USER_stg|
+|{counter:del}|DynamoDB|fdpf_CVRID_DMP_stg|
+|{counter:del}|DynamoDB|fdpf_CVRID_MMP_stg|
+|{counter:del}|DynamoDB|fdpf_EXT_credentials_stg|
+|{counter:del}|API Gateway|fdpf-cmnsvc-authz-stg|
+|{counter:del}|API Gateway|fdpf-cmnsvc-ctr-stg|
+|{counter:del}|API Gateway|stg-infra|インフラ用のAPI Gateway
+|{counter:del}|Lambda|fdpf_ATZ_cognitocheck_stg|
+|{counter:del}|Lambda|fdpf_ATZ_confirmAuthorization_stg|
+|{counter:del}|Lambda|fdpf_ATZ_destroyResourceOperationToken_stg|
+|{counter:del}|Lambda|fdpf_ATZ_getAccessibleScopeData_stg|
+|{counter:del}|Lambda|fdpf_ATZ_getResourceOperationToken_stg|
+|{counter:del}|Lambda|fdpf_ATZ_updateAuthRegistration_stg|
+|{counter:del}|Lambda|fdpf_ATZ_updateUserRegistration_stg|
+|{counter:del}|CodePipeLine|fdpf-longterm-storage-stg-Pipeline|
+|{counter:del}|CodePipeLine|fdpf-atz-destroyrsrcoptoken-stg-Pipeline|
+|{counter:del}|CodePipeLine|fdpf-atz-destroyrsrcoptoken-stg-Pipeline|
+|{counter:del}|CodePipeLine|fdpf-atz-getrsrcoptoken-stg-Pipeline|
+|{counter:del}|CodePipeLine|fdpf-atz-getaccessiblescopedata-stg-Pipeline|
+|{counter:del}|CodePipeLine|fdpf-atz-confirmauthorization-stg-Pipeline|
+|{counter:del}|CodePipeLine|fdpf-atz-cognitocheck-stg-Pipeline|
+|{counter:del}|CodePipeLine|fdpf-atz-updateuserregistration-stg-Pipeline|
+|{counter:del}|CodePipeLine|fdpf-piscpcpfsvc-stg|
+|{counter:del}|CodePipeLine|fdpf-piscrmcp-stg|
+|{counter:del}|CodePipeLine|fdpf-pisccvrid-stg|
+|{counter:del}|CodePipeLine|fdpf-piscdatacol-stg|
+|{counter:del}|CodePipeLine|fdpf-piscrmctl-stg|
+|{counter:del}|CodePipeLine|fdpf-piscrmsvc-stg|
+|{counter:del}|CodePipeLine|fdpf-piscmdlmgm-stg|
+|{counter:del}|CodePipeLine|fdpf-seceqpmgm-stg|
+|{counter:del}|CodePipeLine|fdpf-seceqprsc-stg|
+|===
